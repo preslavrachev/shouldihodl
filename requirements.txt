@@ -1,0 +1,11 @@
+cachetools==2.0.1
+easyargs==0.9.4
+matplotlib==2.0.2
+numpy==1.13.1
+pandas==0.20.3
+https://github.com/s4w3d0ff/python-poloniex/archive/v0.4.7.zip#egg=poloniex
+PyFunctional==1.0.0
+requests==2.18.1
+scipy==0.19.1
+tqdm==4.19.5
+scikit-learn==0.18.2
