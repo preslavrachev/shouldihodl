@@ -3,6 +3,7 @@ import time
 import pandas as pd
 from poloniex import Poloniex
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 from sklearn.tree import DecisionTreeClassifier
 
 # Data frame column names
@@ -59,9 +60,9 @@ def label_data(df):
     price at a given future time is higher or lower than the current weighted
     average.
     """
-    df[CN_FUTURE_PRICE_WA] = df['weightedAverage'].shift(-1 * PERIODS_IN_7D)
+    df[CN_FUTURE_PRICE_WA] = df[CN_WA_AVG_6400].shift(-1 * PERIODS_IN_7D)
     df[CN_NEXT_PCT_CHANGE] = (
-        df[CN_FUTURE_PRICE_WA] / df['weightedAverage']) - 1
+        df[CN_FUTURE_PRICE_WA] / df[CN_WA_AVG_6400]) - 1
     df.loc[df[CN_NEXT_PCT_CHANGE] >= 0, CN_LABEL] = 1
     df.loc[df[CN_NEXT_PCT_CHANGE] <= 0, CN_LABEL] = -1
 
@@ -92,11 +93,24 @@ def classify_and_predict(df):
 
     df['cluster'] = tree_classifier.predict(extract_inputs_from_data_frame(df))
 
+    tn, fp, fn, tp = confusion_matrix(
+        labels_test, tree_classifier.predict(inputs_test)).ravel()
+    test_accuracy = tree_classifier.score(inputs_test, labels_test)
+    predicted_future_probability = tree_classifier.predict_proba(
+        extract_inputs_from_data_frame(df.iloc[-1]).values.reshape(1, -1))[0]
+    weighted_predicted_future_probability = predicted_future_probability * test_accuracy
+
+    buy_decision = True if weighted_predicted_future_probability[1] > 0.5 else False
+
     return {
         'predictions3': df['cluster'].rolling(3).mean().iloc[-1],
-        'last_probability': tree_classifier.predict_proba(
-            extract_inputs_from_data_frame(df.iloc[-1]).values.reshape(1, -1))[0],
-        'test_accuracy': tree_classifier.score(inputs_test, labels_test, sample_weight=labels_test.abs())
+        'last_probability': predicted_future_probability,
+        'test_accuracy': test_accuracy,
+        'true_negatives': tn,
+        'true_positives': tp,
+        'false_negatives': fn,
+        'false_positives': fp,
+        'buy_decision': buy_decision
     }
 
 
@@ -104,8 +118,6 @@ def main():
     df = fetch_data()
     df = extend_stats(df)
     df = label_data(df)
-
-    feat = extract_inputs_from_data_frame(df)
 
     print(classify_and_predict(df))
 
