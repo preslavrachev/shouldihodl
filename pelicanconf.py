@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
+import json
 
 AUTHOR = 'Preslav Rachev'
 SITENAME = 'Should I HODL?'
 SITEURL = ''
 
 PATH = 'content'
+
+THEME = 'theme/'
 
 TIMEZONE = 'Europe/Berlin'
 
@@ -33,3 +36,9 @@ DEFAULT_PAGINATION = False
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
+
+DECISION_DATA = {}
+with open('decision.json', 'r') as fp:
+    DECISION_DATA = json.load(fp)
+
+print(DECISION_DATA)
