@@ -118,7 +118,7 @@ cf_upload: publish
 	cd $(OUTPUTDIR) && swift -v -A https://auth.api.rackspacecloud.com/v1.0 -U $(CLOUDFILES_USERNAME) -K $(CLOUDFILES_API_KEY) upload -c $(CLOUDFILES_CONTAINER) .
 
 github: publish
-	git remote add origin-pages https://${GITHUB_TOKEN}@github.com/shouldihodl
+	git remote add origin-pages https://${GITHUB_TOKEN}@github.com/preslavrachev/shouldihodl
 	ghp-import -m "Generate Pelican site" -b $(GITHUB_PAGES_BRANCH) $(OUTPUTDIR)
 	git push origin-pages $(GITHUB_PAGES_BRANCH)
 
