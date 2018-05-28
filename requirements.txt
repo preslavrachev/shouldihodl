@@ -1,5 +1,6 @@
 cachetools==2.0.1
 easyargs==0.9.4
+ghp-import==0.5.5
 matplotlib==2.0.2
 numpy==1.13.1
 pandas==0.20.3
