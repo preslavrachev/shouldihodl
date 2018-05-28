@@ -1,9 +1,10 @@
 language: python
 python:
-  - "3.6"
-# command to install dependencies
+- '3.6'
 install:
-  - pip install -r requirements.txt
-# command to run tests
+- pip install -r requirements.txt
 script:
-  - python ./script.py && make github
+- python ./script.py && make github
+env:
+  global:
+    secure: QcsZKtweydviABczWksE/Trld6vTPG7W5ggeXlsO2lxEggyvQKJ47DCi2kQ2JFDjGviItaKEhleMdPTg53oLFF9wxizuIkajODXpuUtuqpj6jlCghUnASyD349SMMYwUPumOzje3OAiVPV6aqTE7TsWT/Ii26yiP6WIphlpyydBj9FQug6KvBqLNZYSXgXUUQSklytFZcSTinvxDbG3q0P7mgv6pKSbt0mDS3DznO1Qc2O5jRLhVFVCToQECH1+FSBEzTE1Tq6C97P8Y6E+bUAWz7TWVwgDIDvMadDFmZwg58SyI+9l3YXHo661CFgWCZRgWD1MapuDBur3oIU+r58KAKWJ1M54ONYQKB5oSX1At4AuivURIsSruVRusPto7Pe+O8U2QfBlwrcNTCqayWaQcYaNrNSpb5RkayX73qe/8RIKcCTSJtuiPUeDSbV1OI+pXNDXXAKwAq/p/WsK8wvJeA41vSSKbK8fZLMW0A1vVHTvQuQW+fTCt+WTS+0i7jLwY+1X+p5JZOm4SYpC/rZ8R6mJiHUnKD+dGjo0lsKyrWlXgxqgwjDaDVoGIjgBQsI8AFacbvVz+gOhMuOxyJoRIhfFtzFvkJxfCItAhqH2PDXsTQpW8XPaup4xyJgfuZOjQ3/4tbqA/0jfO12vW3lHmvSHC3S4rre+71iIc27Y=
