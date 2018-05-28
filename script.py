@@ -1,3 +1,4 @@
+import json
 import time
 
 import pandas as pd
@@ -103,13 +104,13 @@ def classify_and_predict(df):
     buy_decision = True if weighted_predicted_future_probability[1] > 0.5 else False
 
     return {
-        'predictions3': df['cluster'].rolling(3).mean().iloc[-1],
-        'last_probability': predicted_future_probability,
-        'test_accuracy': test_accuracy,
-        'true_negatives': tn,
-        'true_positives': tp,
-        'false_negatives': fn,
-        'false_positives': fp,
+        #'predictions3': df['cluster'].rolling(3).mean().iloc[-1],
+        'last_probability': list(predicted_future_probability),
+        #'test_accuracy': test_accuracy,
+        #'true_negatives': tn,
+        #'true_positives': tp,
+        #'false_negatives': fn,
+        #'false_positives': fp,
         'buy_decision': buy_decision
     }
 
@@ -119,7 +120,11 @@ def main():
     df = extend_stats(df)
     df = label_data(df)
 
-    print(classify_and_predict(df))
+    predicition_decision = classify_and_predict(df)
+    print(predicition_decision)
+
+    with open('decision.json', 'w') as fp:
+        json.dump(predicition_decision, fp)
 
 
 if __name__ == '__main__':
