@@ -44,7 +44,7 @@ def extend_stats(df):
     df[CN_HILO] = df[CN_LOW] / df[CN_HIGH]
     periods_in_14d = PERIODS_IN_7D * 2
     df[CN_HILO_7D] = df[CN_LOW].rolling(
-        PERIODS_IN_7D).sum() / df[CN_HIGH].rolling(PERIODS_IN_7D).sum()
+        PERIODS_IN_7D).mean() / df[CN_HIGH].rolling(PERIODS_IN_7D).mean()
 
     df['date'] = pd.to_datetime(df['date'], unit='s')
     weighted_averages_ = df[CN_WEIGHTED_AVERAGE]
