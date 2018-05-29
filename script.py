@@ -50,7 +50,7 @@ def extend_stats(df):
     weighted_averages_ = df[CN_WEIGHTED_AVERAGE]
     df['wa_moving_50'] = weighted_averages_.rolling(50).mean()
     df['wa_moving_200'] = weighted_averages_.rolling(200).mean()
-    df[CN_WA_AVG_6400] = weighted_averages_ / \
+    df[CN_WA_AVG_6400] = df['wa_moving_50'] / \
         weighted_averages_.rolling(6400).max()
     return df
 
