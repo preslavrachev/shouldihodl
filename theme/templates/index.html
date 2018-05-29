@@ -38,7 +38,7 @@
                 {{ 'YES' if DECISION_DATA.buy_decision else 'NO' }}
         </div>
         <hr>
-        <p style="text-align: left">I have been correct in <b>{{ "${:,.2f}".format(DECISION_DATA.test_accuracy * 100) }}%</b> of the cases, based on past data.
+        <p style="text-align: left">I have been correct in <b>{{ "{:,.2f}".format(DECISION_DATA.test_accuracy * 100) }}%</b> of the cases, based on past data.
         Yet, you <b>should never</b> trust my prediction alone! Always do your own research first!</p>
     </section>
     <!-- /#content -->
