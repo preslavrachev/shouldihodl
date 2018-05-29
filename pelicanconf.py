@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
+from datetime import datetime
 import json
 
 AUTHOR = 'Preslav Rachev'
@@ -40,5 +41,6 @@ DEFAULT_PAGINATION = False
 DECISION_DATA = {}
 with open('decision.json', 'r') as fp:
     DECISION_DATA = json.load(fp)
+    DECISION_DATA['last_update'] = datetime.fromtimestamp(DECISION_DATA['timestamp'])
 
 print(DECISION_DATA)

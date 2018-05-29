@@ -106,11 +106,12 @@ def classify_and_predict(df):
     return {
         #'predictions3': df['cluster'].rolling(3).mean().iloc[-1],
         'last_probability': list(predicted_future_probability),
-        #'test_accuracy': test_accuracy,
+        'test_accuracy': test_accuracy,
         #'true_negatives': tn,
         #'true_positives': tp,
         #'false_negatives': fn,
         #'false_positives': fp,
+        'timestamp': int(time.time()),
         'buy_decision': buy_decision
     }
 

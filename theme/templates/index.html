@@ -1,6 +1,52 @@
-{% extends "base.html" %}
-{% block content %}
-<section id="content">
-{{ DECISION_DATA }}
-</section><!-- /#content -->
-{% endblock content %}
+<!DOCTYPE html>
+<html lang="{{ DEFAULT_LANG }}">
+
+</html>
+
+<head>
+    {% block head %}
+    <title>{% block title %}{{ SITENAME }}{% endblock title %}</title>
+    <meta charset="utf-8" /> {% if FEED_ALL_ATOM %}
+    <link href="{{ FEED_DOMAIN }}/{% if FEED_ALL_ATOM_URL %}{{ FEED_ALL_ATOM_URL }}{% else %}{{ FEED_ALL_ATOM }}{% endif %}"
+        type="application/atom+xml" rel="alternate" title="{{ SITENAME }} Full Atom Feed" /> {% endif %} {% if FEED_ALL_RSS %}
+    <link href="{{ FEED_DOMAIN }}/{% if FEED_ALL_RSS_URL %}{{ FEED_ALL_RSS_URL }}{% else %}{{ FEED_ALL_RSS }}{% endif %}" type="application/rss+xml"
+        rel="alternate" title="{{ SITENAME }} Full RSS Feed" /> {% endif %} {% if FEED_ATOM %}
+    <link href="{{ FEED_DOMAIN }}/{%if FEED_ATOM_URL %}{{ FEED_ATOM_URL }}{% else %}{{ FEED_ATOM }}{% endif %}" type="application/atom+xml"
+        rel="alternate" title="{{ SITENAME }} Atom Feed" /> {% endif %} {% if FEED_RSS %}
+    <link href="{{ FEED_DOMAIN }}/{% if FEED_RSS_URL %}{{ FEED_RSS_URL }}{% else %}{{ FEED_RSS }}{% endif %}" type="application/rss+xml"
+        rel="alternate" title="{{ SITENAME }} RSS Feed" /> {% endif %} {% if CATEGORY_FEED_ATOM and category %}
+    <link href="{{ FEED_DOMAIN }}/{% if CATEGORY_FEED_ATOM_URL %}{{ CATEGORY_FEED_ATOM_URL|format(category.slug) }}{% else %}{{ CATEGORY_FEED_ATOM|format(category.slug) }}{% endif %}"
+        type="application/atom+xml" rel="alternate" title="{{ SITENAME }} Categories Atom Feed" /> {% endif %} {% if CATEGORY_FEED_RSS and category %}
+    <link href="{{ FEED_DOMAIN }}/{% if CATEGORY_FEED_RSS_URL %}{{ CATEGORY_FEED_RSS_URL|format(category.slug) }}{% else %}{{ CATEGORY_FEED_RSS|format(category.slug) }}{% endif %}"
+        type="application/rss+xml" rel="alternate" title="{{ SITENAME }} Categories RSS Feed" /> {% endif %} {% if TAG_FEED_ATOM and tag %}
+    <link href="{{ FEED_DOMAIN }}/{% if TAG_FEED_ATOM_URL %}{{ TAG_FEED_ATOM_URL|format(tag.slug) }}{% else %}{{ TAG_FEED_ATOM|format(tag.slug) }}{% endif %}"
+        type="application/atom+xml" rel="alternate" title="{{ SITENAME }} Tags Atom Feed" /> {% endif %} {% if TAG_FEED_RSS and tag %}
+    <link href="{{ FEED_DOMAIN }}/{% if TAG_FEED_RSS_URL %}{{ TAG_FEED_RSS_URL|format(tag.slug) }}{% else %}{{ TAG_FEED_RSS|format(tag.slug) }}{% endif %}"
+        type="application/rss+xml" rel="alternate" title="{{ SITENAME }} Tags RSS Feed" /> {% endif %} {% endblock head %}
+
+    <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/style.css" />
+</head>
+
+<body>
+        <a href="https://github.com/preslavrachev/shouldihodl"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+    {% block content %}
+    
+    <section id="content" class="container center">
+        <h1 style="font-family: 'Carter One'">I do not know everything ...</h1>
+        <p>... but if you ask me, whether to invest in Bitcoin today, my answer will be:</p>
+        <div id="decision">
+                {{ 'YES' if DECISION_DATA.buy_decision else 'NO' }}
+        </div>
+        <hr>
+        <p style="text-align: left">I have been correct in <b>{{ "${:,.2f}".format(DECISION_DATA.test_accuracy * 100) }}%</b> of the cases, based on past data.
+        Yet, you <b>should never</b> trust my prediction alone! Always do your own research first!</p>
+    </section>
+    <!-- /#content -->
+    {% endblock content %}
+
+    <footer>
+        <h6>SHOULDIHODL is a hobby machine learning project by <a href="https://www.twitter.com/preslavrachev" target="_blank">@preslavrachev</a> | Hosted on <a href="https://github.com/preslavrachev/shouldihodl">GitHub</a> | Updated daily by <a href="https://travis-ci.org/">Travis</a> (Last update: {{ DECISION_DATA.last_update |strftime('%d %B %Y %H:%M:%S') }})</h6>
+    </footer>
+</body>
+
+</html>
