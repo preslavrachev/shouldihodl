@@ -17,6 +17,7 @@ CN_NEXT_PCT_CHANGE = 'next_4hr_pct_change'
 CN_FUTURE_PRICE_WA = 'next_week_wa'
 CN_WEIGHTED_AVERAGE = 'weightedAverage'
 CN_WA_AVG_1D = 'wa_avg_1d'
+CN_WA_AVG_3200 = 'wa_avg_3200'
 CN_WA_AVG_6400 = 'wa_avg_6400'
 
 DURATION_24HR = 60 * 60 * 24
