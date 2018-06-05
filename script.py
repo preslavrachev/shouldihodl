@@ -3,7 +3,7 @@ import time
 
 import pandas as pd
 from poloniex import Poloniex
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_score, train_test_split
 from sklearn.metrics import confusion_matrix
 from sklearn.tree import DecisionTreeClassifier
 
@@ -16,6 +16,7 @@ CN_LABEL = 'label'
 CN_NEXT_PCT_CHANGE = 'next_4hr_pct_change'
 CN_FUTURE_PRICE_WA = 'next_week_wa'
 CN_WEIGHTED_AVERAGE = 'weightedAverage'
+CN_WA_AVG_1D = 'wa_avg_1d'
 CN_WA_AVG_6400 = 'wa_avg_6400'
 
 DURATION_24HR = 60 * 60 * 24
@@ -48,10 +49,12 @@ def extend_stats(df):
 
     df['date'] = pd.to_datetime(df['date'], unit='s')
     weighted_averages_ = df[CN_WEIGHTED_AVERAGE]
-    df['wa_moving_50'] = weighted_averages_.rolling(50).mean()
+    df[CN_WA_AVG_1D] = weighted_averages_.rolling(2 * 24).mean()
     df['wa_moving_200'] = weighted_averages_.rolling(200).mean()
-    df[CN_WA_AVG_6400] = df['wa_moving_50'] / \
+    df[CN_WA_AVG_6400] = df[CN_WA_AVG_1D] / \
         weighted_averages_.rolling(6400).max()
+    df[CN_WA_AVG_3200] = df[CN_WA_AVG_1D] / \
+        weighted_averages_.rolling(3200).max()
     return df
 
 
@@ -73,6 +76,7 @@ def label_data(df):
 def extract_inputs_from_data_frame(df):
     input_features = [
         # ph.CN_STOCHASTIC_14D_K,
+        CN_WA_AVG_3200,
         CN_WA_AVG_6400,
         # ph.CN_QV400_MEAN_REVERSAL,
         CN_HILO_7D
@@ -96,7 +100,7 @@ def classify_and_predict(df):
 
     tn, fp, fn, tp = confusion_matrix(
         labels_test, tree_classifier.predict(inputs_test)).ravel()
-    test_accuracy = tree_classifier.score(inputs_test, labels_test)
+    test_accuracy = cross_val_score(tree_classifier, X=inputs, y=labels).mean()
     predicted_future_probability = tree_classifier.predict_proba(
         extract_inputs_from_data_frame(df.iloc[-1]).values.reshape(1, -1))[0]
     weighted_predicted_future_probability = predicted_future_probability * test_accuracy
