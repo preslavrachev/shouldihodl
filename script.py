@@ -6,12 +6,15 @@ from poloniex import Poloniex
 from sklearn.model_selection import cross_val_score, train_test_split
 from sklearn.metrics import confusion_matrix
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 
 # Data frame column names
 CN_HIGH = 'high'
 CN_LOW = 'low'
 CN_HILO = 'hilo'
+CN_HILO_2D = 'hilo2d'
 CN_HILO_7D = 'hilo7d'
+CN_HILO_14D = 'hilo14d'
 CN_LABEL = 'label'
 CN_NEXT_PCT_CHANGE = 'next_4hr_pct_change'
 CN_FUTURE_PRICE_WA = 'next_week_wa'
@@ -44,9 +47,14 @@ def fetch_data():
 
 def extend_stats(df):
     df[CN_HILO] = df[CN_LOW] / df[CN_HIGH]
-    periods_in_14d = PERIODS_IN_7D * 2
+
+    df[CN_HILO_2D] = df[CN_LOW].rolling(
+        48 * 2).mean() / df[CN_HIGH].rolling(48 * 2).mean()
+
     df[CN_HILO_7D] = df[CN_LOW].rolling(
-        PERIODS_IN_7D).mean() / df[CN_HIGH].rolling(PERIODS_IN_7D).mean()
+    periods_in_14d = PERIODS_IN_7D * 2        
+    df[CN_HILO_14D] = df[CN_LOW].rolling(
+        periods_in_14d).mean() / df[CN_HIGH].rolling(periods_in_14d).mean()
 
     df['date'] = pd.to_datetime(df['date'], unit='s')
     weighted_averages_ = df[CN_WEIGHTED_AVERAGE]
@@ -76,11 +84,13 @@ def label_data(df):
 
 def extract_inputs_from_data_frame(df):
     input_features = [
-        # ph.CN_STOCHASTIC_14D_K,
+        #CN_STOCHASTIC_14D_K,
         CN_WA_AVG_3200,
         CN_WA_AVG_6400,
-        # ph.CN_QV400_MEAN_REVERSAL,
-        CN_HILO_7D
+        #CN_QV400_MEAN_REVERSAL,
+        CN_HILO_2D,
+        CN_HILO_14D,
+        #CN_HILO_30D
     ]
 
     return df[input_features].fillna(df[input_features].mean())
@@ -93,29 +103,31 @@ def classify_and_predict(df):
     inputs_train, inputs_test, labels_train, labels_test = train_test_split(
         inputs, labels)
 
-    tree_classifier = DecisionTreeClassifier(min_samples_leaf=100)
-    # tree_classifier = RandomForestClassifier()
+    #tree_classifier = DecisionTreeClassifier(max_depth=2)
+    tree_classifier = RandomForestClassifier(max_depth=2, n_estimators=50)
     tree_classifier.fit(inputs_train, labels_train)
 
     df['cluster'] = tree_classifier.predict(extract_inputs_from_data_frame(df))
 
     tn, fp, fn, tp = confusion_matrix(
         labels_test, tree_classifier.predict(inputs_test)).ravel()
-    test_accuracy = cross_val_score(tree_classifier, X=inputs, y=labels).mean()
+    test_accuracy = cross_val_score(tree_classifier, X=inputs, y=labels, cv=10).mean()
     predicted_future_probability = tree_classifier.predict_proba(
-        extract_inputs_from_data_frame(df.iloc[-1]).values.reshape(1, -1))[0]
-    weighted_predicted_future_probability = predicted_future_probability * test_accuracy
+        extract_inputs_from_data_frame(df.iloc[-3:])).mean(axis=0)
 
-    buy_decision = True if weighted_predicted_future_probability[1] > 0.5 else False
+    print(predicted_future_probability)  
+    # weighted_predicted_future_probability = predicted_future_probability * test_accuracy
+
+    buy_decision = True if predicted_future_probability[1] > 0.5 else False
 
     return {
-        #'predictions3': df['cluster'].rolling(3).mean().iloc[-1],
-        'last_probability': list(predicted_future_probability),
+        # 'predictions3': df['cluster'].rolling(3).mean().iloc[-1],
+        #'last_probability': list(predicted_future_probability),
         'test_accuracy': test_accuracy,
-        #'true_negatives': tn,
-        #'true_positives': tp,
-        #'false_negatives': fn,
-        #'false_positives': fp,
+        # 'true_negatives': tn,
+        # 'true_positives': tp,
+        # 'false_negatives': fn,
+        # 'false_positives': fp,
         'timestamp': int(time.time()),
         'buy_decision': buy_decision
     }
