@@ -51,7 +51,6 @@ def extend_stats(df):
     df[CN_HILO_2D] = df[CN_LOW].rolling(
         48 * 2).mean() / df[CN_HIGH].rolling(48 * 2).mean()
 
-    df[CN_HILO_7D] = df[CN_LOW].rolling(
     periods_in_14d = PERIODS_IN_7D * 2        
     df[CN_HILO_14D] = df[CN_LOW].rolling(
         periods_in_14d).mean() / df[CN_HIGH].rolling(periods_in_14d).mean()
