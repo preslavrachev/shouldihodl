@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css?family=Carter+One');
+@import url('https://fonts.googleapis.com/css?family=Carter+One|Open+Sans');
+@import url('https://fonts.googleapis.com/css?family=Carter+One|Lato|Open+Sans');
+
+html {
+    height: 100%;
+}
+
+body {
+    background: url('/theme/images/bgnoise.png');
+
+    display: flex;
+    align-items: center;
+    box-align: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    justify-content: center;
+
+    min-height: 100%;
+
+    font-family: 'Lato', sans-serif;
+}
+
+a {
+    color: #49a7e9;
+}
+
+
+nav {
+    font-size: 15px;
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    background: #2e2e2e;
+}
+
+#content {
+	margin-bottom: 2em;
+
+    flex: none;
+    max-width: 50%;
+    
+    color: #2e2e2e;
+}
+
+footer {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    padding: 1rem;
+}
+
+@media screen and (max-width: 600px) {
+    #content {
+        max-width: 80%;
+    }
+}
+
+#decision {
+    font-size: 12rem;
+    font-family: 'Carter One', cursive;
+}
+
+.center {
+    text-align: center;
+}
